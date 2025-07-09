@@ -22,11 +22,13 @@ Get the latest release from the releases page.
 
 ### Run Binary Directly
 
-```bash # connect to local substrate node ./eth-rpc-linux-x64 --node-rpc-url
+```bash
+# connect to local substrate node ./eth-rpc-linux-x64 --node-rpc-url
 ws://localhost:9944
 
 # specify custom ports ./eth-rpc-linux-x64 \ --eth-rpc-listen-address
-127.0.0.1:8545 \ --prometheus-listen-address 127.0.0.1:9616 ```
+127.0.0.1:8545 \ --prometheus-listen-address 127.0.0.1:9616
+```
 
 ### Connect MetaMask
 
@@ -41,5 +43,7 @@ Prometheus metrics available at `http://localhost:9616/metrics`
 
 ## Build from Source
 
-```bash git clone https://github.com/paritytech/polkadot-sdk.git cd polkadot-sdk
-cargo build --release -p pallet-revive-eth-rpc --bin eth-rpc ```
+```bash
+git clone https://github.com/paritytech/polkadot-sdk.git cd polkadot-sdk
+cargo build --release -p pallet-revive-eth-rpc --bin eth-rpc
+```
