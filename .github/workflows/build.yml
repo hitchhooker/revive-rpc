@@ -1,0 +1,53 @@
+name: Build Revive RPC
+
+on:
+ push:
+   tags:
+     - "v*"
+ workflow_dispatch:
+   inputs:
+     tag:
+       description: "Release tag"
+       required: true
+       default: "v1.0.0"
+     branch:
+       description: "Polkadot SDK branch"
+       required: true
+       default: "master"
+
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   permissions:
+     contents: write
+   
+   steps:
+     - uses: actions/checkout@v4
+     
+     - name: Install deps
+       run: |
+         sudo apt-get update
+         sudo apt-get install -y protobuf-compiler clang libclang-dev
+     
+     - name: Setup rust
+       uses: dtolnay/rust-toolchain@stable
+       with:
+         components: rust-src
+     
+     - name: Clone and build
+       run: |
+         git clone --depth 1 --branch ${{ github.event.inputs.branch || 'master' }} \
+           https://github.com/paritytech/polkadot-sdk.git
+         cd polkadot-sdk
+         cargo build --locked --profile production -p pallet-revive-eth-rpc --bin eth-rpc
+         mv target/production/eth-rpc ../eth-rpc-linux-x64
+         cd ..
+         sha256sum eth-rpc-linux-x64 > checksums.sha256
+     
+     - name: Release
+       uses: softprops/action-gh-release@v1
+       with:
+         tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+         files: |
+           eth-rpc-linux-x64
+           checksums.sha256
